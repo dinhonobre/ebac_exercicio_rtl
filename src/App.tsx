@@ -1,6 +1,6 @@
-import Post from "./components/Post";
+import Post from "./components/PostComments/src/components/Post";
 
-import styles from './App.module.css';
+import styles from "./App.module.css";
 
 function App() {
   return (
