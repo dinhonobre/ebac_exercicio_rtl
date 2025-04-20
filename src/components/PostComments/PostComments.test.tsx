@@ -1,23 +1,29 @@
-import { render } from '@testing-library/react';
-import { screen } from '@testing-library/dom';
-import userEvent from '@testing-library/user-event'
-import PostComment from '.'
+import { fireEvent, render, screen } from '@testing-library/react'
+import PostComment from './index'  // Aponte para o componente correto
+import React from 'react'
 
 describe('Teste para o componente PostComment', () => {
-  it('Deve renderizar o botão "Comentar"', () => {
-    render(<PostComment />)
-    expect(screen.getByText('Comentar')).toBeInTheDocument()
-  })
-
-  it('Deve permitir adicionar um comentário', async () => {
+  it('Deve adicionar dois comentários na tela', () => {
     render(<PostComment />)
 
-    const input = screen.getByPlaceholderText(/digite seu comentário/i)
-    const button = screen.getByRole('button', { name: /comentar/i })
+    // Obtenha os elementos pelo data-testid
+    const input = screen.getByTestId('campo-comentario')
+    const botao = screen.getByTestId('botao-enviar')
 
-    await userEvent.type(input, 'Comentário de teste')
-    await userEvent.click(button)
+    // Adicione o primeiro comentário
+    fireEvent.change(input, { target: { value: 'Primeiro comentário' } })
+    fireEvent.click(botao)
 
-    expect(screen.getByText('Comentário de teste')).toBeInTheDocument()
+    // Adicione o segundo comentário
+    fireEvent.change(input, { target: { value: 'Segundo comentário' } })
+    fireEvent.click(botao)
+
+    // Verifique se os dois comentários aparecem na tela
+    const comentarios = screen.getAllByTestId('comentario')
+
+    // Espera-se que existam 2 comentários
+    expect(comentarios).toHaveLength(2)
+    expect(comentarios[0]).toHaveTextContent('Primeiro comentário')
+    expect(comentarios[1]).toHaveTextContent('Segundo comentário')
   })
 })
